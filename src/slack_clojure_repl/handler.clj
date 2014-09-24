@@ -9,7 +9,7 @@
 
 (def url "http://tryclj.com/eval.json")
 
-(defn eval-string [s]
+(defn tryclj [s]
   (-> (client/get url {:query-params {"expr" s}})
       :body
       json/read-str))
@@ -28,7 +28,7 @@
         (let [expr (:text params)]
           {:status 200
            :content-type "text/plain"
-           :body (prettify expr (eval-string expr))}))
+           :body (prettify expr (tryclj expr))}))
   (route/not-found "Not Found"))
 
 (def app (handler/site #'app-routes))
