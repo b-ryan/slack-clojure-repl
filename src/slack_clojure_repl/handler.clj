@@ -1,8 +1,10 @@
 (ns slack-clojure-repl.handler
   (:require [clojure.data.json :as json]
-            [compojure.core :refer :all]
+            [compojure.core :refer [defroutes GET PUT POST DELETE ANY]]
             [compojure.handler :as handler]
             [compojure.route :as route]
+            [ring.adapter.jetty :as jetty]
+            [environ.core :refer [env]]
             [clj-http.client :as client]))
 
 (def url "http://tryclj.com/eval.json")
@@ -24,5 +26,8 @@
            :body (prettify expr (eval-string expr))}))
   (route/not-found "Not Found"))
 
-(def app
-  (handler/site app-routes))
+(def app (handler/site #'app-routes))
+
+(defn -main [& [port]]
+  (let [port (Integer. (or port (env :port) 5000))]
+    (jetty/run-jetty app {:port port :join? false})))
