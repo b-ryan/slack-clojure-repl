@@ -27,12 +27,19 @@
   (client/post slack-webhook {:body (json/write-str payload)
                               :content-type :json}))
 
+(defn response-channel [params]
+  (let [channel-name (:channel_name params)]
+    (if (or (= "privategroup" channel-name) (= "directmessage" channel-name))
+      (str "@" (:user_name params))
+      (str "#" channel-name))))
+
 (defroutes app-routes
   (POST "/slack" {:keys [params] :as request}
         (prn params)
         (let [expr (:text params)
               response-text (prettify expr (tryclj expr))]
-          (send-to-slack {:text response-text})
+          (send-to-slack {:channel (response-channel params)
+                          :text response-text})
           {:status 200}))
   (route/not-found "Not Found"))
 

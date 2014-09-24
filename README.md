@@ -28,7 +28,7 @@ application with Heroku before, see the
 page.
 
 ```
-heroku config:set SLACKBOT_WEBHOOK='https://...'
+heroku config:set SLACK_WEBHOOK='https://...'
 ```
 
 ## TODO
