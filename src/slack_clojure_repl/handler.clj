@@ -12,11 +12,16 @@
 (defn eval-string [s]
   (-> (client/get url {:query-params {"expr" s}})
       :body
-      json/read-str
-      (get "result")))
+      json/read-str))
 
-(defn prettify [expr result]
-  (str "```\n" expr "\n=> " result "\n```"))
+(defn prettify [expr response]
+  (prn response)
+  (let [pre (str "```\n" expr "\n=> ")
+        mid (if (get response "error")
+              (get response "message")
+              (get response "result"))
+        post  "\n```"]
+  (str pre mid post)))
 
 (defroutes app-routes
   (POST "/slack" {:keys [params] :as request}
