@@ -5,11 +5,23 @@
             [compojure.route :as route]
             [clj-http.client :as client]))
 
+(def url "http://tryclj.com/eval.json")
+
+(defn eval-string [s]
+  (-> (client/get url {:query-params {"expr" s}})
+      :body
+      json/read-str
+      (get "result")))
+
+(defn prettify [expr result]
+  (str "```\n" expr "\n=> " result "\n```"))
+
 (defroutes app-routes
   (POST "/slack" {:keys [params] :as request}
-        {:status 200
-         :content-type "text/plain"
-         :body (str "```\n" (pr-str (load-string (:text params))) "\n```")})
+        (let [expr (:text params)]
+          {:status 200
+           :content-type "text/plain"
+           :body (prettify expr (eval-string expr))}))
   (route/not-found "Not Found"))
 
 (def app
