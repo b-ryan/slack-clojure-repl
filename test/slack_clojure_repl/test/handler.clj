@@ -17,14 +17,14 @@
     (with-redefs [tryclj (constantly {"error" true
                                       "message" "a message"})
                   send-to-slack #(is (= % {:channel "#"
-                                           :text "```\n> 2\na message\n```"}))]
-      (let [response (app (mock/request :post "/slack?text=2"))]
+                                           :text "```\n@buck> 2\na message\n```"}))]
+      (let [response (app (mock/request :post "/slack?text=2&user_name=buck"))]
         (is (= (:status response) 200))
         ))
     (with-redefs [tryclj (constantly {"result" "the result"})
                   send-to-slack #(is (= % {:channel "#"
-                                           :text "```\n> xyz\nthe result\n```"}))]
-      (let [response (app (mock/request :post "/slack?text=xyz"))]
+                                           :text "```\n@buck> xyz\nthe result\n```"}))]
+      (let [response (app (mock/request :post "/slack?text=xyz&user_name=buck"))]
         (is (= (:status response) 200))
         )))
 

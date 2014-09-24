@@ -15,8 +15,8 @@
       :body
       json/read-str))
 
-(defn prettify [expr response]
-  (let [pre (str "```\n> " expr "\n")
+(defn prettify [username expr response]
+  (let [pre (str "```\n@" username "> " expr "\n")
         mid (if (get response "error")
               (get response "message")
               (get response "result"))
@@ -37,7 +37,7 @@
   (POST "/slack" {:keys [params] :as request}
         (prn params)
         (let [expr (:text params)
-              response-text (prettify expr (tryclj expr))]
+              response-text (prettify (:user_name params) expr (tryclj expr))]
           (send-to-slack {:channel (response-channel params)
                           :text response-text})
           {:status 200}))
