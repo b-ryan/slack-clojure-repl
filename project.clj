@@ -7,6 +7,7 @@
                  [clj-http "1.0.0"]]
   :plugins [[lein-ring "0.8.11"]]
   :ring {:handler slack-clojure-repl.handler/app}
+  :uberjar-name "slack-clojure-repl-standalone.jar"
   :profiles
   {:dev {:dependencies [[javax.servlet/servlet-api "2.5"]
                         [ring-mock "0.1.5"]]}})
