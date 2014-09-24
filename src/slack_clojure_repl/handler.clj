@@ -8,6 +8,7 @@
             [clj-http.client :as client]))
 
 (def url "http://tryclj.com/eval.json")
+(def slack-webhook (env :slack-webhook))
 
 (defn tryclj [s]
   (-> (client/get url {:query-params {"expr" s}})
@@ -15,7 +16,6 @@
       json/read-str))
 
 (defn prettify [expr response]
-  (prn response)
   (let [pre (str "```\n> " expr "\n")
         mid (if (get response "error")
               (get response "message")
@@ -23,12 +23,17 @@
         post  "\n```"]
   (str pre mid post)))
 
+(defn send-to-slack [payload]
+  (client/post slack-webhook {:body (json/write-str payload)
+                              :content-type :json}))
+
 (defroutes app-routes
   (POST "/slack" {:keys [params] :as request}
-        (let [expr (:text params)]
-          {:status 200
-           :content-type "text/plain"
-           :body (prettify expr (tryclj expr))}))
+        (prn params)
+        (let [expr (:text params)
+              response-text (prettify expr (tryclj expr))]
+          (send-to-slack {:text response-text})
+          {:status 200}))
   (route/not-found "Not Found"))
 
 (def app (handler/site #'app-routes))
