@@ -16,7 +16,7 @@
 
 (defn prettify [expr response]
   (prn response)
-  (let [pre (str "```\n" expr "\n=> ")
+  (let [pre (str "```\n> " expr "\n")
         mid (if (get response "error")
               (get response "message")
               (get response "result"))
