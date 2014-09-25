@@ -5,13 +5,16 @@
             [compojure.route :as route]
             [ring.adapter.jetty :as jetty]
             [environ.core :refer [env]]
-            [clj-http.client :as client]))
+            [clj-http.client :as client]
+            [clj-http.cookies :refer [cookie-store]]))
 
 (def url "http://tryclj.com/eval.json")
 (def slack-webhook (env :slack-webhook))
+(def tryclj-cookies (cookie-store))
 
 (defn tryclj [s]
-  (-> (client/get url {:query-params {"expr" s}})
+  (-> (client/get url {:query-params {"expr" s}
+                       :cookie-store tryclj-cookies})
       :body
       json/read-str))
 
