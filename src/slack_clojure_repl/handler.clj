@@ -1,6 +1,6 @@
 (ns slack-clojure-repl.handler
   (:require [clojure.data.json :as json]
-            [compojure.core :refer [defroutes GET PUT POST DELETE ANY]]
+            [compojure.core :refer [defroutes POST]]
             [compojure.handler :as handler]
             [compojure.route :as route]
             [ring.adapter.jetty :as jetty]
