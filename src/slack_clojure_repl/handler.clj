@@ -18,14 +18,6 @@
       :body
       json/read-str))
 
-(defn prettify [username expr response]
-  (let [pre (str "```\n@" username "> " expr "\n")
-        mid (if (get response "error")
-              (get response "message")
-              (get response "result"))
-        post  "\n```"]
-  (str pre mid post)))
-
 (defn send-to-slack [payload]
   (client/post slack-webhook {:body (json/write-str payload)
                               :content-type :json}))
@@ -36,14 +28,22 @@
       (str "@" (:user_name params))
       (str "#" channel-name))))
 
+(defn response-text [params]
+  (let [expr (:text params)
+        response (tryclj expr)
+        pre (str "```\n@" (:user_name params) "> " expr "\n")
+        mid (if (get response "error")
+              (get response "message")
+              (get response "result"))
+        post  "\n```"]
+  (str pre mid post)))
+
 (defroutes app-routes
   (POST "/slack" {:keys [params] :as request}
         (prn params)
-        (let [expr (:text params)
-              response-text (prettify (:user_name params) expr (tryclj expr))]
-          (send-to-slack {:channel (response-channel params)
-                          :text response-text})
-          {:status 200}))
+        (send-to-slack {:channel (response-channel params)
+                        :text (response-text params)})
+        {:status 200})
   (route/not-found "Not Found"))
 
 (def app (handler/site #'app-routes))

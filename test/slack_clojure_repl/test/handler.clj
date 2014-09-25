@@ -3,14 +3,14 @@
             [slack-clojure-repl.handler :refer [app tryclj send-to-slack] :as h]
             [ring.mock.request :as mock]))
 
-(deftest test-responses
+(deftest test-response-channel
   (testing "response channel"
     (is (= (h/response-channel {:channel_name "privategroup"
                                 :user_name "buck"}) "@buck"))
     (is (= (h/response-channel {:channel_name "directmessage"
                                 :user_name "buck"}) "@buck"))
     (is (= (h/response-channel {:channel_name "general"}) "#general"))
-           ))
+    ))
 
 (deftest test-app
   (testing "slack route"
