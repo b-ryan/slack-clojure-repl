@@ -1,5 +1,6 @@
 (ns slack-clojure-repl.handler
   (:require [clojure.data.json :as json]
+            [clojure.tools.logging :as log]
             [compojure.core :refer [defroutes POST]]
             [compojure.handler :as handler]
             [compojure.route :as route]
@@ -13,10 +14,12 @@
 (def tryclj-cookies (cookie-store))
 
 (defn tryclj [s]
-  (-> (client/get url {:query-params {"expr" s}
-                       :cookie-store tryclj-cookies})
-      :body
-      json/read-str))
+  (let [response (client/get url {:query-params {"expr" s}
+                                  :cookie-store tryclj-cookies})]
+    (log/debug "tryclj response " response)
+    (-> response
+        :body
+        json/read-str)))
 
 (defn send-to-slack [payload]
   (client/post slack-webhook {:body (json/write-str payload)

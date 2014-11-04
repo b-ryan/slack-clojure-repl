@@ -4,6 +4,7 @@
   :url "http://example.com/FIXME"
   :dependencies [[org.clojure/clojure "1.6.0"]
                  [org.clojure/data.json "0.2.5"]
+                 [org.clojure/tools.logging "0.3.1"]
                  [compojure "1.1.8"]
                  [ring/ring-jetty-adapter "1.2.2"]
                  [clj-http "1.0.0"]
