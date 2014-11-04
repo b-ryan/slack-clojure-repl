@@ -16,7 +16,7 @@
 (defn tryclj [s]
   (let [response (client/get url {:query-params {"expr" s}
                                   :cookie-store tryclj-cookies})]
-    (log/debug "tryclj response " response)
+    (prn "tryclj response " response)
     (-> response
         :body
         json/read-str)))
