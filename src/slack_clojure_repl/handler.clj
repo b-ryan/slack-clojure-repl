@@ -8,7 +8,7 @@
             [clj-http.client :as client]
             [clj-http.cookies :refer [cookie-store]]))
 
-(def url "http://tryclj.com/eval.json")
+(def url "http://www.tryclj.com/eval.json")
 (def slack-webhook (env :slack-webhook))
 (def tryclj-cookies (cookie-store))
 
